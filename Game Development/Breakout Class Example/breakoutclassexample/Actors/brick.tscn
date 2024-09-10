@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cipo3gc1tb5j5"]
+
+[ext_resource type="Texture2D" uid="uid://cn4hceppc7klu" path="res://1x/Block.png" id="1_7sx3f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sqw0c"]
+size = Vector2(117, 28.5)
+
+[node name="Brick" type="CharacterBody2D" groups=["Bricks"]]
+position = Vector2(0, 1)
+motion_mode = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-4.57764e-05, -0.499999)
+scale = Vector2(1.01887, -1.07018)
+texture = ExtResource("1_7sx3f")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.0100555, -0.2073)
+scale = Vector2(0.92, 2.16)
+shape = SubResource("RectangleShape2D_sqw0c")

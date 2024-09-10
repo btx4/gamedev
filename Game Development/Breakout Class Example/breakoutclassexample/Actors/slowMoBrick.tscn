@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://djgyyp11xtirf"]
+
+[ext_resource type="Texture2D" uid="uid://xas2a1v71gj8" path="res://Actors/SlowMoBrick.png" id="1_26v2o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xlo16"]
+size = Vector2(117, 28.5)
+
+[node name="SlowMoBrick" type="Node2D"]
+
+[node name="SlowMoBrick" type="CharacterBody2D" parent="." groups=["Bricks", "SlowMo"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="SlowMoBrick" groups=["Bricks", "SlowMo"]]
+position = Vector2(-0.490456, -0.499868)
+rotation = 3.14159
+scale = Vector2(1.01887, -1.07018)
+texture = ExtResource("1_26v2o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SlowMoBrick" groups=["Bricks", "SlowMo"]]
+position = Vector2(-0.500465, -0.207174)
+scale = Vector2(0.92, 2.16)
+shape = SubResource("RectangleShape2D_xlo16")

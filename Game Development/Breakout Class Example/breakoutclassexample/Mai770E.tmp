@@ -1,0 +1,100 @@
+[gd_scene load_steps=13 format=3 uid="uid://nrg0j6erob2t"]
+
+[ext_resource type="Script" path="res://paddle.gd" id="1_ny2qj"]
+[ext_resource type="Script" path="res://ball.gd" id="2_7gmrn"]
+[ext_resource type="Script" path="res://brick_script_manager.gd" id="3_el03b"]
+[ext_resource type="PackedScene" uid="uid://cipo3gc1tb5j5" path="res://Actors/brick.tscn" id="3_ji3mj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kjaov"]
+size = Vector2(123, 21.75)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_v7vkg"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_87v47"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2xowk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oabjb"]
+size = Vector2(12.8286, 0.732704)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_33en7"]
+size = Vector2(54, 592)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arygg"]
+size = Vector2(20, 8)
+
+[sub_resource type="Resource" id="Resource_rjuvv"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Paddle" type="CharacterBody2D" parent="." groups=["Paddle"]]
+position = Vector2(591, 631)
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_ny2qj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Paddle"]
+position = Vector2(0.036972, 0.287872)
+shape = SubResource("RectangleShape2D_kjaov")
+
+[node name="Sprite2D" type="Sprite2D" parent="Paddle"]
+position = Vector2(0.036972, 0.287995)
+scale = Vector2(120.074, 18.576)
+texture = SubResource("CanvasTexture_v7vkg")
+
+[node name="Ball" type="CharacterBody2D" parent="."]
+position = Vector2(195, 113)
+script = ExtResource("2_7gmrn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Ball"]
+scale = Vector2(19.56, 19.56)
+texture = SubResource("CanvasTexture_87v47")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = SubResource("RectangleShape2D_2xowk")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-45.491, 293.5)
+scale = Vector2(6.0036, -809.331)
+shape = SubResource("RectangleShape2D_oabjb")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(1172, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(9, 286)
+shape = SubResource("RectangleShape2D_33en7")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(600, -27)
+scale = Vector2(88.6726, 6)
+shape = SubResource("RectangleShape2D_arygg")
+
+[node name="BrickScriptManager" type="Node2D" parent="."]
+script = ExtResource("3_el03b")
+brick_scene = SubResource("Resource_rjuvv")
+
+[node name="Brick" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick2" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick3" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick4" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick5" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick6" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)
+
+[node name="Brick7" parent="BrickScriptManager" instance=ExtResource("3_ji3mj")]
+position = Vector2(70, 37)

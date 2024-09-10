@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxql6fthn8u26"]
+
+[ext_resource type="Texture2D" uid="uid://cok3hu16nkcqp" path="res://1x/Asset 1.png" id="1_4rv3k"]
+[ext_resource type="Script" path="res://Actors/brickScript.gd" id="1_21atf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ju2ul"]
+size = Vector2(117, 28.5)
+
+[node name="HardBricks" type="Node2D"]
+
+[node name="HardBrick1" type="CharacterBody2D" parent="." groups=["Bricks", "hardBricks"]]
+script = ExtResource("1_21atf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HardBrick1"]
+position = Vector2(3.8147e-06, 6.10948e-05)
+scale = Vector2(0.92, 2.16)
+shape = SubResource("RectangleShape2D_ju2ul")
+
+[node name="Sprite2D" type="Sprite2D" parent="HardBrick1"]
+position = Vector2(3.8147e-06, 0)
+scale = Vector2(1.01887, 1.08772)
+texture = ExtResource("1_4rv3k")

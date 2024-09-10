@@ -1,0 +1,207 @@
+[gd_scene load_steps=22 format=3 uid="uid://bjjg3wfjn3wrq"]
+
+[ext_resource type="Script" path="res://MusicHandler.gd" id="1_awfgl"]
+[ext_resource type="Script" path="res://paddle.gd" id="1_lx6qr"]
+[ext_resource type="Texture2D" uid="uid://b1cjllcp4y4tn" path="res://Actors/Paddle.png" id="2_84tky"]
+[ext_resource type="Script" path="res://ball.gd" id="3_g8iqg"]
+[ext_resource type="Texture2D" uid="uid://cugtbeo4akwy2" path="res://Actors/Ball.png" id="5_obg1c"]
+[ext_resource type="AudioStream" uid="uid://dmehgdchivm4t" path="res://blockBroke.wav" id="6_qcpwx"]
+[ext_resource type="AudioStream" uid="uid://da6mxgldal7n4" path="res://Actors/Breakoutp2.wav" id="7_xgxnv"]
+[ext_resource type="Script" path="res://brick_handler.gd" id="8_1w6yb"]
+[ext_resource type="PackedScene" uid="uid://cipo3gc1tb5j5" path="res://Actors/brick.tscn" id="9_oi6pw"]
+[ext_resource type="PackedScene" uid="uid://bxql6fthn8u26" path="res://Actors/hardBricks.tscn" id="10_vi0hl"]
+[ext_resource type="PackedScene" uid="uid://djgyyp11xtirf" path="res://Actors/slowMoBrick.tscn" id="11_xbqlo"]
+[ext_resource type="AudioStream" uid="uid://dhml4yquben3a" path="res://Actors/SlowMo.wav" id="12_gellf"]
+[ext_resource type="Script" path="res://slowmo_handler.gd" id="12_o1tk7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kjaov"]
+size = Vector2(123, 21.75)
+
+[sub_resource type="GDScript" id="GDScript_y5jaa"]
+script/source = "extends CharacterBody2D
+
+@export var speed: float = 200
+@export var max_speed:float = 5000
+@export var min_speed = 100
+@export var start_text: RichTextLabel
+var chance = 2
+var forward = Vector2(0, 1).normalized()
+@export var ball_scene: PackedScene # Reference to the Ball scene
+
+
+func _physics_process(delta: float) -> void:
+	var collision: KinematicCollision2D = move_and_collide(forward * speed * delta)
+	if collision:
+		var collider = collision.get_collider()
+		forward = forward.bounce(collision.get_normal())
+		speed = clamp(speed + 30, min_speed, max_speed)
+
+		# Check if the collider is the paddle
+		if collider.is_in_group(\"Paddle\"):
+			var offset = (get_global_mouse_position().x - global_position.x) / 35
+			forward.x = -offset
+			forward = forward.normalized()
+
+		if collider.is_in_group(\"Bricks\"):
+
+			if collider.is_in_group(\"hardBricks\"):
+				collider.start_shake()
+				var sprite = collider.get_node(\"Sprite2D\")  # Access the Sprite2D node
+				if sprite.texture == load(\"res://1x/Asset 1.png\"):
+					sprite.texture = load(\"res://1x/Asset 2.png\")  # Change the texture path
+				elif sprite.texture == load(\"res://1x/Asset 2.png\"):
+					sprite.texture = load(\"res://1x/Asset 3.png\")
+				else:
+					spawn_new_ball(position)
+					collider.queue_free()
+			elif (collision.get_collider().is_in_group(\"SlowMo\")):
+				
+				collider.queue_free()
+				var parent = get_parent()  # Get the parent node
+				var grandparent = parent.get_parent()
+				var child = grandparent.get_node(\"SlowMo Handler\")  # Find the child node
+				if child:
+					child._trigger()
+				else:
+					print(\"no child node found\")
+				
+			else:
+				if randi() % 11 < chance:
+					spawn_new_ball(position)
+				collider.queue_free()
+			
+		
+func spawn_new_ball(position: Vector2) -> void:
+	var new_ball: Node = duplicate()
+	if new_ball:
+		new_ball.position = position + Vector2(40, 0)
+		new_ball.speed = 200
+		if get_parent():
+			get_parent().add_child(new_ball)
+			
+			# Additional checks
+			if not new_ball.is_inside_tree():
+				print(\"New ball is not inside the scene tree.\")
+		else:
+			print(\"Failed to get parent node.\")
+	else:
+		print(\"Failed to instantiate new ball.\")
+
+#func reset() -> void:
+	## Reset the position of the ball
+	#position = Vector2(screen_height / 2, screen_height / 2)
+	#forward = Vector2(1, 1).normalized()'
+
+func _on_slow_mo_timeout() -> void:
+	Engine.time_scale = 1
+	pass # Replace with function body.
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3t3cp"]
+
+[sub_resource type="PackedScene" id="PackedScene_02e3v"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("BallScene2", "Node2D", "Ball2", "position", "script", "CharacterBody2D", "Sprite2D", "scale", "texture", "CollisionShape2D", "shape", "BrickCollision", "stream", "AudioStreamPlayer2D"),
+"node_count": 5,
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 0, 0, 0, 0, 5, 2, -1, 2, 3, 0, 4, 1, 0, 1, 0, 6, 6, -1, 2, 7, 2, 8, 3, 0, 1, 0, 9, 9, -1, 1, 10, 4, 0, 1, 0, 13, 11, -1, 2, 3, 5, 12, 6, 0),
+"variants": [Vector2(-1, 0), SubResource("GDScript_y5jaa"), Vector2(0.101266, 0.101266), ExtResource("5_obg1c"), SubResource("RectangleShape2D_3t3cp"), Vector2(-598, -341), ExtResource("6_qcpwx")],
+"version": 3
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2xowk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oabjb"]
+size = Vector2(12.8286, 0.7673)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_33en7"]
+size = Vector2(54, 625)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arygg"]
+size = Vector2(20, 8)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_awfgl")
+
+[node name="Paddle" type="CharacterBody2D" parent="." groups=["Paddle"]]
+position = Vector2(595, 631)
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_lx6qr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Paddle"]
+position = Vector2(0.250012, 1.24186)
+scale = Vector2(0.314249, 0.302268)
+texture = ExtResource("2_84tky")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Paddle"]
+position = Vector2(0.0369873, 0.287842)
+shape = SubResource("RectangleShape2D_kjaov")
+
+[node name="Ball" type="CharacterBody2D" parent="." node_paths=PackedStringArray("start_text")]
+position = Vector2(599, 341)
+script = ExtResource("3_g8iqg")
+start_text = NodePath("../Start Text")
+ball_scene = SubResource("PackedScene_02e3v")
+
+[node name="Sprite2D" type="Sprite2D" parent="Ball"]
+scale = Vector2(0.109705, 0.109705)
+texture = ExtResource("5_obg1c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = SubResource("RectangleShape2D_2xowk")
+
+[node name="BrickCollision" type="AudioStreamPlayer2D" parent="Ball"]
+position = Vector2(-599, -341)
+stream = ExtResource("6_qcpwx")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-38.491, 307.5)
+scale = Vector2(6.0036, -809.331)
+shape = SubResource("RectangleShape2D_oabjb")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(1172, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(9, 302.5)
+shape = SubResource("RectangleShape2D_33en7")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(600, -27)
+scale = Vector2(88.6726, 6)
+shape = SubResource("RectangleShape2D_arygg")
+
+[node name="Start Text" type="RichTextLabel" parent="."]
+offset_left = 458.0
+offset_top = 508.0
+offset_right = 826.0
+offset_bottom = 578.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Click to Start!"
+
+[node name="Brick Handler" type="Node2D" parent="."]
+script = ExtResource("8_1w6yb")
+brick_scene = ExtResource("9_oi6pw")
+hard_bricks = ExtResource("10_vi0hl")
+slowMoBrick = ExtResource("11_xbqlo")
+
+[node name="SlowMo Handler" type="Node2D" parent="."]
+script = ExtResource("12_o1tk7")
+
+[node name="SlowMo" type="Timer" parent="SlowMo Handler"]
+
+[node name="SlowMoSound" type="AudioStreamPlayer2D" parent="SlowMo Handler"]
+stream = ExtResource("12_gellf")
+
+[node name="Breakoutp2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_xgxnv")
+
+[connection signal="timeout" from="SlowMo Handler/SlowMo" to="Ball" method="_on_slow_mo_timeout"]

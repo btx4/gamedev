@@ -1,0 +1,103 @@
+[gd_scene load_steps=5 format=3 uid="uid://dcow7c7i02t32"]
+
+[ext_resource type="Texture2D" uid="uid://cugtbeo4akwy2" path="res://Actors/Ball.png" id="2_d7i57"]
+[ext_resource type="AudioStream" uid="uid://dmehgdchivm4t" path="res://blockBroke.wav" id="3_iwjnf"]
+
+[sub_resource type="GDScript" id="GDScript_y5jaa"]
+script/source = "extends CharacterBody2D
+
+@export var speed: float = 200
+@export var max_speed:float = 5000
+@export var min_speed = 100
+@export var start_text: RichTextLabel
+var chance = 2
+var forward = Vector2(0, 1).normalized()
+@export var ball_scene: PackedScene # Reference to the Ball scene
+
+
+func _physics_process(delta: float) -> void:
+	var collision: KinematicCollision2D = move_and_collide(forward * speed * delta)
+	if collision:
+		var collider = collision.get_collider()
+		forward = forward.bounce(collision.get_normal())
+		speed = clamp(speed + 30, min_speed, max_speed)
+
+		# Check if the collider is the paddle
+		if collider.is_in_group(\"Paddle\"):
+			var offset = (get_global_mouse_position().x - global_position.x) / 35
+			forward.x = -offset
+			forward = forward.normalized()
+
+		if collider.is_in_group(\"Bricks\"):
+
+			if collider.is_in_group(\"hardBricks\"):
+				collider.start_shake()
+				var sprite = collider.get_node(\"Sprite2D\")  # Access the Sprite2D node
+				if sprite.texture == load(\"res://1x/Asset 1.png\"):
+					sprite.texture = load(\"res://1x/Asset 2.png\")  # Change the texture path
+				elif sprite.texture == load(\"res://1x/Asset 2.png\"):
+					sprite.texture = load(\"res://1x/Asset 3.png\")
+				else:
+					spawn_new_ball(position)
+					collider.queue_free()
+			elif (collision.get_collider().is_in_group(\"SlowMo\")):
+				
+				collider.queue_free()
+				var parent = get_parent()  # Get the parent node
+				var grandparent = parent.get_parent()
+				var child = grandparent.get_node(\"SlowMo Handler\")  # Find the child node
+				if child:
+					child._trigger()
+				else:
+					print(\"no child node found\")
+				
+			else:
+				if randi() % 11 < chance:
+					spawn_new_ball(position)
+				collider.queue_free()
+			
+		
+func spawn_new_ball(position: Vector2) -> void:
+	var new_ball: Node = duplicate()
+	if new_ball:
+		new_ball.position = position + Vector2(40, 0)
+		new_ball.speed = 200
+		if get_parent():
+			get_parent().add_child(new_ball)
+			
+			# Additional checks
+			if not new_ball.is_inside_tree():
+				print(\"New ball is not inside the scene tree.\")
+		else:
+			print(\"Failed to get parent node.\")
+	else:
+		print(\"Failed to instantiate new ball.\")
+
+#func reset() -> void:
+	## Reset the position of the ball
+	#position = Vector2(screen_height / 2, screen_height / 2)
+	#forward = Vector2(1, 1).normalized()'
+
+func _on_slow_mo_timeout() -> void:
+	Engine.time_scale = 1
+	pass # Replace with function body.
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3t3cp"]
+
+[node name="BallScene2" type="Node2D"]
+
+[node name="Ball2" type="CharacterBody2D" parent="."]
+position = Vector2(-1, 0)
+script = SubResource("GDScript_y5jaa")
+
+[node name="Sprite2D" type="Sprite2D" parent="Ball2"]
+scale = Vector2(0.101266, 0.101266)
+texture = ExtResource("2_d7i57")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball2"]
+shape = SubResource("RectangleShape2D_3t3cp")
+
+[node name="BrickCollision" type="AudioStreamPlayer2D" parent="Ball2"]
+position = Vector2(-598, -341)
+stream = ExtResource("3_iwjnf")
