@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjbajty2ubmqo"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_al4rn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k0xpi"]
+
+[node name="GruntEnemy" type="CharacterBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(18, 18)
+texture = SubResource("CanvasTexture_al4rn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_k0xpi")

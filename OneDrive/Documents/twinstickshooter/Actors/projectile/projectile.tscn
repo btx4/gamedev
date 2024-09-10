@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://by0wumexg11hv"]
+
+[ext_resource type="Script" path="res://Actors/projectile/projectile.gd" id="1_st48t"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_xxhyg"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_lkdh6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rhuhf"]
+
+[node name="Projectile" type="Area2D"]
+script = ExtResource("1_st48t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(18, 18)
+texture = SubResource("CanvasTexture_xxhyg")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2D"]
+position = Vector2(0.361111, 0)
+scale = Vector2(0.611111, 0.777778)
+texture = SubResource("CanvasTexture_lkdh6")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D"]
+position = Vector2(0.416667, 0)
+scale = Vector2(0.722222, 0.555556)
+texture = SubResource("CanvasTexture_lkdh6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_rhuhf")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
